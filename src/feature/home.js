@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { http } from "../services/http";
 import { useNavigate } from "react-router-dom";
+import Chatbox from '../components/Chatbox/index';
 
 const Dashboard = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -13,8 +14,8 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       const untrimtoken = sessionStorage.getItem("access_token");
-      const token = untrimtoken.replace(/"/g, "");
-      if (token) {
+      if (untrimtoken) {
+        const token = untrimtoken.replace(/"/g, "");
         setIsLoggedIn(true);
         try {
           const response = await http.get("/api/profile", {
@@ -109,7 +110,7 @@ const Dashboard = () => {
 
           <div className="relative flex items-center space-x-4">
             <button
-              onClick={() => {}}
+              onClick={() => navigate("/message")}
               className="bg-green-500 text-white p-2 rounded hover:bg-green-600 flex items-center"
             >
               Messenger
@@ -150,6 +151,7 @@ const Dashboard = () => {
       <footer className="bg-white shadow-md p-4">
         <div className="container mx-auto flex justify-between"></div>
       </footer>
+      <Chatbox/> 
     </div>
   );
 };

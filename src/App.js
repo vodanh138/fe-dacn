@@ -9,6 +9,7 @@ const App = () => {
   return (
     <Router>
       <Routes>
+        <Route path="/message" element={<Profile />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/register" element={<Register />} />
         <Route path="/" element={<Dashboard />} />
