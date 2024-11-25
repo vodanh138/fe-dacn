@@ -139,8 +139,6 @@ function Chatbox() {
                 },
               });
               setSender(response.data.data.user.id);
-              console.log(response.data.data.user.id);
-            
             } catch (error) {
               console.error("Failed to fetch user data", error);
             }
