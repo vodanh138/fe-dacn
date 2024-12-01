@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { http } from "../../services/http";
+import Posts from "./Posts";
 
 const Post = () => {
   const [posts, setPosts] = useState([]);
@@ -20,6 +21,34 @@ const Post = () => {
     } else {
       setSelectedFileName("");
       setImagePreview(null);
+    }
+  };
+
+  const handleLike = async (postId, isLiked) => {
+    try {
+      const response = await http({
+        method: isLiked ? "DELETE" : "POST",
+        url: `/api/post/${postId}/like`,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.status === 200) {
+        setPosts((prevPosts) =>
+          prevPosts.map((post) =>
+            post.id === postId
+              ? {
+                  ...post,
+                  likes: isLiked ? post.likes - 1 : post.likes + 1,
+                  isLiked: !isLiked,
+                }
+              : post
+          )
+        );
+      }
+    } catch (error) {
+      console.error("Failed to toggle like", error);
     }
   };
 
@@ -136,7 +165,7 @@ const Post = () => {
             >
               Post
             </button>
-          </div>
+          </div>  
         </div>
 
         <div className="bg-white p-4 shadow-md rounded-lg">
@@ -144,36 +173,12 @@ const Post = () => {
             <p className="text-gray-500">There are no posts for you yet.</p>
           ) : (
             posts.map((post, index) => (
-              <div
-                key={index}
-                className="mb-6 p-4 bg-white border border-gray-200 rounded-lg shadow-sm"
-              >
-                <div className="flex items-center mb-4">
-                  <img
-                    src={process.env.REACT_APP_API_URL + post.user_ava}
-                    alt={post.user}
-                    className="w-10 h-10 rounded-full object-cover mr-4"
-                  />
-                  <div>
-                    <p className="font-medium text-gray-800">
-                      {post.user_name}
-                    </p>
-                    <span className="text-sm text-gray-500">
-                      {new Date(post.created_at).toLocaleString()}
-                    </span>
-                  </div>
-                </div>
-
-                <p className="text-gray-800 mb-4">{post.content}</p>
-
-                {post.image && (
-                  <img
-                    src={process.env.REACT_APP_API_URL + post.image}
-                    alt="Post"
-                    className="w-full max-w-md h-auto object-cover rounded-lg shadow-md"
-                  />
-                )}
-              </div>
+              <Posts
+              key={index}
+              post={post}
+              index={index}
+              handleLike={handleLike}
+              />
             ))
           )}
         </div>

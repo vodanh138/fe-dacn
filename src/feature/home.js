@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import Chatbox from "../components/Chatbox/index";
-import Login from "../components/Login/login";
-import Header from "../components/Header/header";
-import Post from "../components/Post/Post";
+import Login from "../components/Login";
+import Header from "../components/Header";
+import Post from "../components/Post";
 
 const Dashboard = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
