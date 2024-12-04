@@ -56,6 +56,7 @@ const Posts = ({ post, index, handleLike }) => {
           }}
         >
           <FontAwesomeIcon icon={faCommentAlt} className="text-xl" />
+          <span className="ml-2 text-gray-600">{post.comments}</span>
         </button>
       </div>
       {commentsVisible && <Comment post_id={post.id} />}

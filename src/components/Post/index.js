@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { http } from "../../services/http";
 import Posts from "./Posts";
+import Popup from "../Popup";
 
 const Post = () => {
   const [posts, setPosts] = useState([]);
@@ -8,6 +9,13 @@ const Post = () => {
   const [token, setToken] = useState("");
   const [selectedFileName, setSelectedFileName] = useState("");
   const [imagePreview, setImagePreview] = useState(null);
+  const [notiOn, setNotiOn] = useState("");
+  const [apiStatus, setApiStatus] = useState("");
+  const [apiMessage, setApiMessage] = useState("");
+
+  const handleClosePopup = () => {
+    setNotiOn(false);
+  };
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -101,10 +109,22 @@ const Post = () => {
           setNewPost("");
           setImagePreview("");
           setSelectedFileName(null);
+          setNotiOn(true);
+          setTimeout(() => {
+            setNotiOn(false);
+          }, 3000);
+          setApiStatus(response.data.status);
+          setApiMessage(response.data.message);
           document.getElementById("postImage").value = "";
         }
       } catch (error) {
         console.error("Failed to create post", error);
+        setNotiOn(true);
+        setTimeout(() => {
+          setNotiOn(false);
+        }, 3000);
+        setApiStatus(error.response.data.status);
+        setApiMessage(error.response.data.message);
       }
     }
   };
@@ -165,7 +185,7 @@ const Post = () => {
             >
               Post
             </button>
-          </div>  
+          </div>
         </div>
 
         <div className="bg-white p-4 shadow-md rounded-lg">
@@ -174,10 +194,10 @@ const Post = () => {
           ) : (
             posts.map((post, index) => (
               <Posts
-              key={index}
-              post={post}
-              index={index}
-              handleLike={handleLike}
+                key={index}
+                post={post}
+                index={index}
+                handleLike={handleLike}
               />
             ))
           )}
@@ -186,6 +206,7 @@ const Post = () => {
       <footer className="bg-white shadow-md p-4">
         <div className="container mx-auto flex justify-between"></div>
       </footer>
+      {notiOn && <Popup status={apiStatus} message={apiMessage} onClose={handleClosePopup} />}
     </>
   );
 };

@@ -41,7 +41,7 @@ const Comment = ({ post_id }) => {
             },
           }
         );
-        setComments((prevComments) => [...prevComments, response.data.data]);
+        setComments((prevComments) => [...prevComments, response.data.data.comments]);
         setNewComment("");
       } catch (error) {
         console.error("Failed to post comment", error);

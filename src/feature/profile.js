@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { http } from "../services/http";
 import { useNavigate } from "react-router-dom";
 import Header from "../components/Header";
+import Posts from "../components/Post/Posts";
+import LoadingPage from "../components/Loading/loading";
 
 const Profile = () => {
   const [user, setUser] = useState(null);
@@ -10,7 +12,37 @@ const Profile = () => {
   const [newFirstName, setNewFirstName] = useState("");
   const [newCoverPhoto, setNewCoverPhoto] = useState(null);
   const [newAvatar, setNewAvatar] = useState(null);
+  const [posts, setPosts] = useState([]);
   const navigate = useNavigate();
+
+  const handleLike = async (postId, isLiked) => {
+    try {
+      const token = JSON.parse(sessionStorage.getItem("access_token"));
+      const response = await http({
+        method: isLiked ? "DELETE" : "POST",
+        url: `/api/post/${postId}/like`,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.status === 200) {
+        setPosts((prevPosts) =>
+          prevPosts.map((post) =>
+            post.id === postId
+              ? {
+                  ...post,
+                  likes: isLiked ? post.likes - 1 : post.likes + 1,
+                  isLiked: !isLiked,
+                }
+              : post
+          )
+        );
+      }
+    } catch (error) {
+      console.error("Failed to toggle like", error);
+    }
+  };
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -30,6 +62,7 @@ const Profile = () => {
           setUser(response.data.data.user);
           setNewLastName(response.data.data.user.lastname);
           setNewFirstName(response.data.data.user.firstname);
+          setPosts(response.data.data.posts);
         }
       } catch (error) {
         console.error("Failed to fetch user profile", error);
@@ -110,19 +143,19 @@ const Profile = () => {
     }
   }, [newAvatar]);
 
-  if (!user) return <p className="text-center mt-4">Loading...</p>;
+  if (!user) return <LoadingPage />;
 
   return (
     <>
       <Header />
-      <div className="flex flex-col items-center min-h-screen bg-gray-100 py-8">
+      <div className="flex flex-col items-center min-h-screen bg-gray-50 py-6">
         <div className="w-full max-w-4xl relative">
           {user.coverphoto && (
             <div className="relative">
               <img
                 src={process.env.REACT_APP_API_URL + user.coverphoto}
                 alt={`${user.firstname} ${user.lastname}`}
-                className="w-full h-64 object-cover rounded-t-lg cursor-pointer"
+                className="w-full h-64 object-cover rounded-lg shadow-md cursor-pointer"
                 onClick={() =>
                   document.getElementById("coverPhotoInput").click()
                 }
@@ -136,12 +169,12 @@ const Profile = () => {
               />
             </div>
           )}
-          <div className="bg-white p-8 shadow-md rounded-lg flex flex-col items-center relative -mt-32 z-10">
+          <div className="bg-white p-8 shadow-lg rounded-lg flex flex-col items-center relative -mt-20 z-10">
             <div className="relative">
               <img
                 src={process.env.REACT_APP_API_URL + user.ava}
                 alt={`Avatar of ${user.firstname} ${user.lastname}`}
-                className="w-40 h-40 rounded-full border-4 border-white shadow-lg cursor-pointer"
+                className="w-32 h-32 rounded-full border-4 border-white shadow-md cursor-pointer hover:scale-105 transition-transform"
                 onClick={() => document.getElementById("avatarInput").click()}
               />
               <input
@@ -153,54 +186,72 @@ const Profile = () => {
               />
             </div>
             {editingName ? (
-              <div className="flex flex-col items-center mb-4">
+              <div className="flex flex-col items-center mt-4">
                 <div className="mb-2">
-                  <label className="block text-sm font-medium mb-1">
+                  <label className="block text-sm font-medium mb-1 text-gray-600">
                     Lastname:
                   </label>
                   <input
                     type="text"
                     value={newLastName}
                     onChange={(e) => setNewLastName(e.target.value)}
-                    className="border border-gray-300 rounded p-2"
+                    className="border border-gray-300 rounded-md p-2 w-full"
                   />
                 </div>
-                <div className="mb-4">
-                  <label className="block text-sm font-medium mb-1">
+                <div className="mb-2">
+                  <label className="block text-sm font-medium mb-1 text-gray-600">
                     Firstname:
                   </label>
                   <input
                     type="text"
                     value={newFirstName}
                     onChange={(e) => setNewFirstName(e.target.value)}
-                    className="border border-gray-300 rounded p-2"
+                    className="border border-gray-300 rounded-md p-2 w-full"
                   />
                 </div>
-                <button
-                  onClick={handleNameChange}
-                  className="bg-yellow-500 text-white p-2 rounded hover:bg-yellow-600 transition duration-200"
-                >
-                  Save
-                </button>
-                <button
-                  onClick={() => setEditingName(false)}
-                  className="mt-2 bg-gray-500 text-white p-2 rounded hover:bg-gray-600 transition duration-200"
-                >
-                  Cancel
-                </button>
+                <div className="flex space-x-4">
+                  <button
+                    onClick={handleNameChange}
+                    className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition duration-200"
+                  >
+                    Save
+                  </button>
+                  <button
+                    onClick={() => setEditingName(false)}
+                    className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition duration-200"
+                  >
+                    Cancel
+                  </button>
+                </div>
               </div>
             ) : (
-              <div className="flex flex-col items-center mb-4">
-                <h2 className="text-2xl font-semibold">{`${user.lastname} ${user.firstname}`}</h2>
+              <div className="flex flex-col items-center mt-4">
+                <h2 className="text-2xl font-semibold text-gray-800">{`${user.lastname} ${user.firstname}`}</h2>
                 <button
                   onClick={() => setEditingName(true)}
-                  className="mt-2 bg-yellow-500 text-white p-2 rounded hover:bg-yellow-600 transition duration-200"
+                  className="mt-2 bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600 transition duration-200"
                 >
                   Edit Name
                 </button>
               </div>
             )}
-            <p className="text-gray-700 mb-6">{user.email}</p>
+            <p className="text-gray-700 mt-4">{user.email}</p>
+          </div>
+          <div className="bg-white mt-4 p-6 shadow-md rounded-lg">
+            {Array.isArray(posts) && posts.length === 0 ? (
+              <p className="text-gray-500 text-center">
+                You don't have any posts yet.
+              </p>
+            ) : (
+              posts.map((post, index) => (
+                <Posts
+                  key={index}
+                  post={post}
+                  index={index}
+                  handleLike={handleLike}
+                />
+              ))
+            )}
           </div>
         </div>
       </div>

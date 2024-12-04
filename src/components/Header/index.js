@@ -1,32 +1,13 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { http } from "../../services/http";
 import SearchBar from "./search";
+import LoadingPage from "../Loading/loading";
+import { useUser } from "../../contexts/UserContext";
 
 const Header = () => {
+  const { loggedUser } = useUser();
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
-  const [ava, setAva] = useState(null);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const fetchUserData = async () => {
-      const untrimtoken = sessionStorage.getItem("access_token");
-      if (untrimtoken) {
-        const token = untrimtoken.replace(/"/g, "");
-        try {
-          const response = await http.get("/api/profile", {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
-          setAva(process.env.REACT_APP_API_URL + response.data.data.user.ava);
-        } catch (error) {
-          console.error("Failed to fetch user data", error);
-        }
-      }
-    };
-    fetchUserData();
-  }, []);
 
   const handleLogout = () => {
     sessionStorage.removeItem("user");
@@ -34,13 +15,14 @@ const Header = () => {
     window.location.reload();
   };
 
+  if (!loggedUser.ava) return <LoadingPage />;
   return (
     <header className="bg-white shadow-md">
       <div className="container mx-auto flex justify-between items-center p-4">
         <button className="text-2xl font-bold" onClick={() => navigate("/")}>
           *Logo*
         </button>
-        <SearchBar />
+        <SearchBar id={loggedUser.id} />
         <div className="relative flex items-center space-x-4">
           <button
             onClick={() => navigate("/message")}
@@ -50,7 +32,7 @@ const Header = () => {
           </button>
           <button onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}>
             <img
-              src={ava}
+              src={loggedUser.ava}
               alt="Profile"
               className="w-8 h-8 rounded-full border border-black focus:outline-none"
             />

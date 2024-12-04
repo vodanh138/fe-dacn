@@ -1,29 +1,33 @@
 import { useEffect, useState } from "react";
+import { FaTimes, FaCheck } from "react-icons/fa";
 
-const Popup = ({ status, message }) => {
+const Popup = ({ status, message, onClose }) => {
   const [isSuccess, setIsSuccess] = useState(false);
-  const [isOn, setIsOn] = useState(false);
 
   useEffect(() => {
-    setIsOn(true)
     if (status === "success") setIsSuccess(true);
-    setTimeout(() => {
-        setIsOn(false);
-      }, 3000);
   }, [status]);
-  
 
   return (
-    <>
-      {isOn && !isSuccess && (
-        <div className="fixed top-4 right-4 bg-red-500 text-white py-2 px-4 rounded shadow-lg flex items-center">{message}</div>
-      )}
-      {isOn && isSuccess && (
-        <div className="fixed top-4 right-4 bg-green-500 text-white py-2 px-4 rounded shadow-lg flex items-center">
-        <span>{message}</span>
+    <div
+      className={`fixed top-4 right-4 py-2 px-4 rounded shadow-lg flex items-center ${isSuccess ? "bg-white text-black" : "bg-white text-black"} border-2 ${isSuccess ? "border-green-500" : "border-red-500"}`}
+    >
+      <div className="mr-2">
+        {isSuccess ? (
+          <FaCheck className="text-green-500" />
+        ) : (
+          <FaTimes className="text-red-500" />
+        )}
       </div>
-      )}
-    </>
+      <span className="flex-1">{message}</span>
+      <button
+        onClick={onClose}
+        className="ml-2 text-black font-bold"
+        style={{ background: "transparent", border: "none", cursor: "pointer" }}
+      >
+        X
+      </button>
+    </div>
   );
 };
 
