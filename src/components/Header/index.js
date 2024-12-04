@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { http } from "../../services/http";
+import SearchBar from "./search";
 
 const Header = () => {
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
@@ -36,8 +37,10 @@ const Header = () => {
   return (
     <header className="bg-white shadow-md">
       <div className="container mx-auto flex justify-between items-center p-4">
-        <h1 className="text-2xl font-bold">*Logo*</h1>
-
+        <button className="text-2xl font-bold" onClick={() => navigate("/")}>
+          *Logo*
+        </button>
+        <SearchBar />
         <div className="relative flex items-center space-x-4">
           <button
             onClick={() => navigate("/message")}
@@ -73,4 +76,5 @@ const Header = () => {
     </header>
   );
 };
+
 export default Header;

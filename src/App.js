@@ -4,6 +4,7 @@ import Register from "./feature/register";
 import Dashboard from "./feature/home";
 import "./tailwind.css";
 import Profile from "./feature/profile";
+import Friend from "./feature/friend";
 
 const App = () => {
   return (
@@ -13,6 +14,7 @@ const App = () => {
         <Route path="/profile" element={<Profile />} />
         <Route path="/register" element={<Register />} />
         <Route path="/" element={<Dashboard />} />
+        <Route path="/profile/:id" element={<Friend />} />
       </Routes>
     </Router>
   );

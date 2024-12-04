@@ -1,19 +1,35 @@
-import React, { useState } from 'react';
-import { http } from '../services/http';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from "react";
+import { http } from "../services/http";
+import { useNavigate } from "react-router-dom";
+import Popup from "../components/Popup";
 
 const Register = () => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [apiStatus, setApiStatus] = useState("");
+  const [apiMessage, setApiMessage] = useState("");
+  const [notiOn, setNotiOn] = useState("");
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await http.post('/api/register', { username, password });
+      const response = await http.post("/api/register", { username, password });
+      setApiStatus(response.data.status);
+      setApiMessage(response.data.message);
       console.log(response.data);
+      setNotiOn(true);
+      setTimeout(() => {
+        setNotiOn(false);
+      }, 3000);
     } catch (error) {
-      console.error('Registration failed', error);
+      console.error("Registration failed", error);
+      setApiStatus(error.response.data.status);
+      setApiMessage(error.response.data.message);
+      setNotiOn(true);
+      setTimeout(() => {
+        setNotiOn(false);
+      }, 3000);
     }
   };
 
@@ -50,12 +66,13 @@ const Register = () => {
           </button>
         </form>
         <button
-          onClick={() => navigate('/')}
+          onClick={() => navigate("/")}
           className="w-full mt-4 bg-gray-500 text-white p-2 rounded hover:bg-gray-600"
         >
           Back to Login
         </button>
       </div>
+      {notiOn && <Popup status={apiStatus} message={apiMessage}/>}
     </div>
   );
 };
