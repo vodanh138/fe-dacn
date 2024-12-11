@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import Chatbox from "../components/Chatbox/index";
 import Login from "../components/Login";
 import Header from "../components/Header";
 import Post from "../components/Post";
@@ -22,7 +21,7 @@ const Dashboard = () => {
               Authorization: `Bearer ${token}`,
             },
           });
-          const userData = response.data.data.user;
+          const userData = response?.data?.data?.user;
           setLoggedUser({
             ava: process.env.REACT_APP_API_URL + userData.ava,
             id: userData.id,
@@ -49,7 +48,6 @@ const Dashboard = () => {
     <div className="flex flex-col min-h-screen bg-gray-100">
       <Header ava={loggedUser.ava} id={loggedUser.id} />
       <Post />
-      <Chatbox />
     </div>
   );
 };

@@ -3,9 +3,13 @@ import Comment from "./Comment";
 import Like from "./Like";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCommentAlt } from "@fortawesome/free-solid-svg-icons";
+import { useUser } from "../../contexts/UserContext";
+import { useNavigate } from "react-router-dom";
 
 const Posts = ({ post, index, handleLike }) => {
   const [commentsVisible, setCommentsVisible] = useState(false);
+  const { loggedUser } = useUser();
+  const navigate = useNavigate();
 
   const toggleComments = () => {
     setCommentsVisible(!commentsVisible);
@@ -20,10 +24,24 @@ const Posts = ({ post, index, handleLike }) => {
         <img
           src={process.env.REACT_APP_API_URL + post.user_ava}
           alt={post.user}
-          className="w-10 h-10 rounded-full object-cover mr-4"
+          className="w-10 h-10 rounded-full object-cover mr-4 cursor-pointer"
+          onClick={() =>
+            post.user_id === loggedUser.id
+              ? navigate(`/profile`)
+              : navigate(`/user/${post.user_id}`)
+          }
         />
         <div>
-          <p className="font-medium text-gray-800">{post.user_name}</p>
+          <p
+            className="font-medium text-gray-800 cursor-pointer"
+            onClick={() =>
+              post.user_id === loggedUser.id
+                ? navigate(`/profile`)
+                : navigate(`/user/${post.user_id}`)
+            }
+          >
+            {post.user_name}
+          </p>
           <span className="text-sm text-gray-500">
             {new Date(post.created_at).toLocaleString()}
           </span>

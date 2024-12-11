@@ -10,21 +10,20 @@ const SearchBar = () => {
   const navigate = useNavigate();
 
   const handleSearch = async (e) => {
-    setSearchQuery(e.target.value);
-    if (e.target.value.trim() !== "") {
+    const query = e.target.value;
+    setSearchQuery(query);
+
+    if (query.trim() !== "") {
       const untrimtoken = sessionStorage.getItem("access_token");
       if (untrimtoken) {
         const token = untrimtoken.replace(/"/g, "");
         try {
-          const response = await http.get(
-            `/api/search?search=${e.target.value}`,
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            }
-          );
-          setSearchResults(response.data.data.users);
+          const response = await http.get(`/api/search?search=${query}`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+          setSearchResults(response?.data?.data?.users);
         } catch (error) {
           console.error("Failed to search users", error);
         }
@@ -43,6 +42,11 @@ const SearchBar = () => {
         placeholder="Search users..."
         className="w-full border border-gray-300 rounded px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
       />
+      {searchResults && searchQuery.trim() !== "" && searchResults.length === 0 && (
+        <div className="absolute mt-2 w-full bg-white shadow-lg rounded-lg z-10 text-center py-2">
+          <span>No User Found</span>
+        </div>
+      )}
       {searchResults && searchResults.length > 0 && (
         <div className="absolute mt-2 w-full bg-white shadow-lg rounded-lg z-10">
           {searchResults.map((user) => (

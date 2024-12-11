@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 import Header from "../components/Header";
 import Posts from "../components/Post/Posts";
 import LoadingPage from "../components/Loading/loading";
+import Popup from "../components/Popup";
+import { usePopup } from "../contexts/PopupContext";
 
 const Profile = () => {
   const [user, setUser] = useState(null);
@@ -13,6 +15,9 @@ const Profile = () => {
   const [newCoverPhoto, setNewCoverPhoto] = useState(null);
   const [newAvatar, setNewAvatar] = useState(null);
   const [posts, setPosts] = useState([]);
+  const [followers, setFollowers] = useState(0);
+  const [following, setFollowing] = useState(0);
+  const { popup, setPopup, onClose } = usePopup();
   const navigate = useNavigate();
 
   const handleLike = async (postId, isLiked) => {
@@ -26,7 +31,7 @@ const Profile = () => {
         },
       });
 
-      if (response.status === 200) {
+      if (response?.status === 200) {
         setPosts((prevPosts) =>
           prevPosts.map((post) =>
             post.id === postId
@@ -58,11 +63,13 @@ const Profile = () => {
           },
         });
 
-        if (response.data.status === "success") {
-          setUser(response.data.data.user);
-          setNewLastName(response.data.data.user.lastname);
-          setNewFirstName(response.data.data.user.firstname);
-          setPosts(response.data.data.posts);
+        if (response?.data?.status === "success") {
+          setUser(response?.data?.data?.user);
+          setNewLastName(response?.data?.data?.user?.lastname);
+          setNewFirstName(response?.data?.data?.user?.firstname);
+          setFollowers(response?.data?.data?.follower);
+          setFollowing(response?.data?.data?.following);
+          setPosts(response?.data?.data?.posts);
         }
       } catch (error) {
         console.error("Failed to fetch user profile", error);
@@ -76,7 +83,7 @@ const Profile = () => {
   const handleNameChange = async () => {
     try {
       const token = JSON.parse(sessionStorage.getItem("access_token"));
-      await http.put(
+      const response = await http.put(
         "/api/profile",
         { lastname: newLastName, firstname: newFirstName },
         {
@@ -85,6 +92,18 @@ const Profile = () => {
           },
         }
       );
+      setPopup({
+        notiOn: true,
+        apiStatus: response?.data?.status,
+        apiMessage: response?.data?.message,
+      });
+      setTimeout(() => {
+        setPopup({
+          notiOn: false,
+          apiStatus: response?.data?.status,
+          apiMessage: response?.data?.message,
+        });
+      }, 3000);
       setUser((prev) => ({
         ...prev,
         firstname: newFirstName,
@@ -93,6 +112,18 @@ const Profile = () => {
       setEditingName(false);
     } catch (error) {
       console.error("Failed to update name", error);
+      setPopup({
+        notiOn: true,
+        apiStatus: error?.response?.data?.status,
+        apiMessage: error?.response?.data?.message,
+      });
+      setTimeout(() => {
+        setPopup({
+          notiOn: false,
+          apiStatus: error?.response?.data?.status,
+          apiMessage: error?.response?.data?.message,
+        });
+      }, 3000);
     }
   };
 
@@ -110,12 +141,26 @@ const Profile = () => {
       formData.append("image", file);
 
       const token = JSON.parse(sessionStorage.getItem("access_token"));
-      await http.post(`/api/upload/${type}`, formData, {
+      const res =await http.post(`/api/upload/${type}`, formData, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "multipart/form-data",
         },
       });
+      if (res?.data?.status === "success") {
+        setPopup({
+          notiOn: true,
+          apiStatus: res?.data?.status,
+          apiMessage: res?.data?.message,
+        });
+        setTimeout(() => {
+          setPopup({
+            notiOn: false,
+            apiStatus: res?.data?.status,
+            apiMessage: res?.data?.message,
+          });
+        }, 3000);
+      }
 
       const response = await http.get("/api/profile", {
         headers: {
@@ -123,11 +168,23 @@ const Profile = () => {
         },
       });
 
-      if (response.data.status === "success") {
-        setUser(response.data.data.user);
+      if (response?.data?.status === "success") {
+        setUser(response?.data?.data?.user);
       }
     } catch (error) {
       console.error("Failed to upload file", error);
+      setPopup({
+        notiOn: true,
+        apiStatus: error?.response?.data?.status,
+        apiMessage: error?.response?.data?.message,
+      });
+      setTimeout(() => {
+        setPopup({
+          notiOn: false,
+          apiStatus: error?.response?.data?.status,
+          apiMessage: error?.response?.data?.message,
+        });
+      }, 3000);
     }
   };
 
@@ -235,7 +292,16 @@ const Profile = () => {
                 </button>
               </div>
             )}
-            <p className="text-gray-700 mt-4">{user.email}</p>
+            <div className="flex justify-around mt-4 w-full">
+              <div className="text-center">
+                <h3 className="text-xl font-bold text-gray-800">{followers}</h3>
+                <p className="text-gray-600">Followers</p>
+              </div>
+              <div className="text-center">
+                <h3 className="text-xl font-bold text-gray-800">{following}</h3>
+                <p className="text-gray-600">Following</p>
+              </div>
+            </div>
           </div>
           <div className="bg-white mt-4 p-6 shadow-md rounded-lg">
             {Array.isArray(posts) && posts.length === 0 ? (
@@ -255,6 +321,13 @@ const Profile = () => {
           </div>
         </div>
       </div>
+      {popup.notiOn && (
+        <Popup
+          status={popup.apiStatus}
+          message={popup.apiMessage || "Server Error"}
+          onClose={onClose}
+        />
+      )}
     </>
   );
 };

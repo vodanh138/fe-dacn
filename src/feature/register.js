@@ -11,21 +11,25 @@ const Register = () => {
   const [notiOn, setNotiOn] = useState("");
   const navigate = useNavigate();
 
+  const handleClosePopup = () => {
+    setNotiOn(false);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const response = await http.post("/api/register", { username, password });
-      setApiStatus(response.data.status);
-      setApiMessage(response.data.message);
-      console.log(response.data);
+      setApiStatus(response?.data?.status);
+      setApiMessage(response?.data?.message);
+      console.log(response?.data);
       setNotiOn(true);
       setTimeout(() => {
         setNotiOn(false);
       }, 3000);
     } catch (error) {
       console.error("Registration failed", error);
-      setApiStatus(error.response.data.status);
-      setApiMessage(error.response.data.message);
+      setApiStatus(error?.response?.data?.status);
+      setApiMessage(error?.response?.data?.message);
       setNotiOn(true);
       setTimeout(() => {
         setNotiOn(false);
@@ -72,7 +76,7 @@ const Register = () => {
           Back to Login
         </button>
       </div>
-      {notiOn && <Popup status={apiStatus} message={apiMessage}/>}
+      {notiOn && <Popup status={apiStatus} message={apiMessage || "Server Error"} onClose={handleClosePopup}/>}
     </div>
   );
 };

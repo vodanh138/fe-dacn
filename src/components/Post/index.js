@@ -42,7 +42,7 @@ const Post = () => {
         },
       });
 
-      if (response.status === 200) {
+      if (response?.status === 200) {
         setPosts((prevPosts) =>
           prevPosts.map((post) =>
             post.id === postId
@@ -72,8 +72,8 @@ const Post = () => {
             },
           });
 
-          if (response.data.status === "success") {
-            setPosts(response.data.data.posts);
+          if (response?.data?.status === "success") {
+            setPosts(response?.data?.data?.posts);
           }
         }
       } catch (error) {
@@ -103,8 +103,8 @@ const Post = () => {
           },
         });
 
-        if (response.status === 200) {
-          const createdPost = response.data.data.posts;
+        if (response?.status === 200) {
+          const createdPost = response?.data?.data?.posts;
           setPosts([createdPost, ...posts]);
           setNewPost("");
           setImagePreview("");
@@ -113,8 +113,8 @@ const Post = () => {
           setTimeout(() => {
             setNotiOn(false);
           }, 3000);
-          setApiStatus(response.data.status);
-          setApiMessage(response.data.message);
+          setApiStatus(response?.data?.status);
+          setApiMessage(response?.data?.message);
           document.getElementById("postImage").value = "";
         }
       } catch (error) {
@@ -123,8 +123,8 @@ const Post = () => {
         setTimeout(() => {
           setNotiOn(false);
         }, 3000);
-        setApiStatus(error.response.data.status);
-        setApiMessage(error.response.data.message);
+        setApiStatus(error?.response?.data?.status);
+        setApiMessage(error?.response?.data?.message);
       }
     }
   };
@@ -206,7 +206,7 @@ const Post = () => {
       <footer className="bg-white shadow-md p-4">
         <div className="container mx-auto flex justify-between"></div>
       </footer>
-      {notiOn && <Popup status={apiStatus} message={apiMessage} onClose={handleClosePopup} />}
+      {notiOn && <Popup status={apiStatus} message={apiMessage || "Server Error"} onClose={handleClosePopup} />}
     </>
   );
 };

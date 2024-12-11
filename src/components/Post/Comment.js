@@ -17,7 +17,7 @@ const Comment = ({ post_id }) => {
               Authorization: `Bearer ${token}`,
             },
           });
-          setComments(response.data.data.comments);
+          setComments(response?.data?.data?.comments);
         } catch (error) {
           console.error("Failed to fetch comments", error);
         }
@@ -41,7 +41,7 @@ const Comment = ({ post_id }) => {
             },
           }
         );
-        setComments((prevComments) => [...prevComments, response.data.data.comments]);
+        setComments((prevComments) => [...prevComments, response?.data?.data?.comments]);
         setNewComment("");
       } catch (error) {
         console.error("Failed to post comment", error);
@@ -62,7 +62,7 @@ const Comment = ({ post_id }) => {
             Authorization: `Bearer ${token}`,
           },
         });
-        if (response.status === 200) {
+        if (response?.status === 200) {
           setComments((prevComments) =>
             prevComments.map((comment) =>
               comment.id === commentId
