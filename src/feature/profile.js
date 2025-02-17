@@ -170,6 +170,7 @@ const Profile = () => {
 
       if (response?.data?.status === "success") {
         setUser(response?.data?.data?.user);
+        window.location.reload();
       }
     } catch (error) {
       console.error("Failed to upload file", error);

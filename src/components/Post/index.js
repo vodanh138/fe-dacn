@@ -127,6 +127,14 @@ const Post = () => {
         setApiMessage(error?.response?.data?.message);
       }
     }
+    else{
+      setNotiOn(true);
+        setTimeout(() => {
+          setNotiOn(false);
+        }, 3000);
+        setApiStatus("fail");
+        setApiMessage("The Content field is required");
+    }
   };
 
   return (
