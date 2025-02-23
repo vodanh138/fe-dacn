@@ -57,10 +57,10 @@ const Header = () => {
             Messenger
           </button> */}
           <button
-            onClick={() => navigate("/profile")}
+            onClick={() => navigate("/chatbot")}
             className="bg-green-500 text-white p-2 rounded hover:bg-green-600 flex items-center"
           >
-            View Profile
+            AI Help
           </button>
           <button onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}>
             <img
@@ -71,12 +71,12 @@ const Header = () => {
           </button>
           {isProfileMenuOpen && (
             <div className="absolute right-0 top-full mt-2 w-48 bg-white shadow-lg rounded-lg z-10">
-              {/* <button
+              <button
                 className="w-full text-left px-4 py-2 hover:bg-gray-200"
                 onClick={() => navigate("/profile")}
               >
                 View Profile
-              </button> */}
+              </button> 
               <button
                 className="w-full text-left px-4 py-2 hover:bg-gray-200"
                 onClick={handleLogout}

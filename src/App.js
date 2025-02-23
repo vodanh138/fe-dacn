@@ -8,6 +8,7 @@ import { UserProvider } from "./contexts/UserContext";
 import "./tailwind.css";
 import { PopupProvider } from "./contexts/PopupContext";
 import { LoadingProvider } from "./contexts/LoadingContext";
+import Chatbot from "./feature/chatbot";
 
 const App = () => {
   return (
@@ -18,6 +19,7 @@ const App = () => {
             <Routes>
               {/* <Route path="/message" element={<Messenger />} /> */}
               <Route path="/profile" element={<Profile />} />
+              <Route path="/chatbot" element={<Chatbot />} />
               <Route path="/register" element={<Register />} />
               <Route path="/" element={<Dashboard />} />
               <Route path="/user/:id" element={<Friend />} />
