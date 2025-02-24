@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import SearchBar from "./search";
 import LoadingPage from "../Loading/loading";
 import { http } from "../../services/http";
-import Chatbox from "../../components/Chatbox/index";
 
 const Header = () => {
   const [ loggedUser , setLoggedUser ] = useState([]);
@@ -87,7 +86,6 @@ const Header = () => {
           )}
         </div>
       </div>
-      <Chatbox />
     </header>
   );
 };

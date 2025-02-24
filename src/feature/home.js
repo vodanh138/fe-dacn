@@ -5,6 +5,7 @@ import Post from "../components/Post";
 import { http } from "../services/http";
 import LoadingPage from "../components/Loading/loading";
 import { useUser } from "../contexts/UserContext";
+import Chatbox from "../components/Chatbox";
 
 const Dashboard = () => {
   const [loading, setLoading] = useState(true);
@@ -48,6 +49,7 @@ const Dashboard = () => {
     <div className="flex flex-col min-h-screen bg-gray-100">
       <Header ava={loggedUser.ava} id={loggedUser.id} />
       <Post />
+      <Chatbox />
     </div>
   );
 };

@@ -6,6 +6,7 @@ import Posts from "../components/Post/Posts";
 import LoadingPage from "../components/Loading/loading";
 import Popup from "../components/Popup";
 import { usePopup } from "../contexts/PopupContext";
+import Chatbox from "../components/Chatbox";
 
 const Profile = () => {
   const [user, setUser] = useState(null);
@@ -329,6 +330,7 @@ const Profile = () => {
           onClose={onClose}
         />
       )}
+      <Chatbox />
     </>
   );
 };
