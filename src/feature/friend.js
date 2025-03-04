@@ -102,7 +102,7 @@ const Friend = () => {
         setFollowers(isFollow ? followers - 1 : followers + 1);
       }
     } catch (error) {
-      console.error("Failed to handle Follow request", error);
+      console.error("Failed to handle Follow request", error?.response?.data?.message);
     }
   };
 

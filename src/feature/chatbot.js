@@ -46,16 +46,21 @@ const Chatbot = () => {
   const [fireMessages] = useCollectionData(messagesQuery, { idField: "id" });
   const reversedMessages = fireMessages?.slice().reverse();
 
-  const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const chatRef = useRef(null);
 
   const sendMessage = async () => {
     if (!input.trim()) return;
-
-    const userMessage = { role: "user", text: input };
-    setMessages((prev) => [...prev, userMessage]);
     setInput("");
+    const messageId = Date.now().toString();
+    const messageRef = doc(messagesRef, messageId);
+    await setDoc(messageRef, {
+      id: messageId,
+      text: input,
+      sender: "user",
+      createdAt: serverTimestamp(),
+    });
+    chatRef.current?.scrollIntoView({ behavior: "smooth" });
 
     const untrimtoken = sessionStorage.getItem("access_token");
     if (untrimtoken) {
@@ -71,22 +76,21 @@ const Chatbot = () => {
           }
         );
 
-        const botMessage = {
-          role: "bot",
-          text: response?.data?.data?.ai_message,
-        };
-        setMessages((prev) => [...prev, botMessage]);
-
         const messageId = Date.now().toString();
         const messageRef = doc(messagesRef, messageId);
         await setDoc(messageRef, {
           id: messageId,
-          text: input,
-          response: response?.data?.data?.ai_message,
+          text: response?.data?.data?.ai_message
+            .replace(/\n/g, "<br>")
+            .replace(/\*\*(.*?)\*\*/g, "<b>$1</b>"),
+          sender: "bot",
           createdAt: serverTimestamp(),
         });
       } catch (error) {
-        console.error("Failed to send message to AI", error);
+        console.error(
+          "Failed to send message to AI",
+          error?.response?.data?.status
+        );
       }
     }
   };
@@ -98,33 +102,42 @@ const Chatbot = () => {
     }
   };
 
-  useEffect(() => {
-    chatRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
-
   return (
-    <div className="h-screen flex flex-col bg-gray-100">
+    <div className="h-screen flex flex-col bg-white">
       <Header />
-      <div className="flex-1 overflow-y-auto p-4 space-y-3 mt-[60px]">
+      <div className="flex-1 overflow-y-auto p-4 space-y-3">
+        
         {reversedMessages &&
           reversedMessages.map((msg, index) => (
-            <div key={index}>
-              <div className={`flex justify-end`}>
-                <div
-                  className={`p-3 max-w-xl rounded-lg bg-blue-500 text-white`}
-                >
+            <div
+              key={index}
+              className={`flex ${
+                msg.sender === "user" ? "justify-end" : "justify-start"
+              }`}
+            >
+              {msg.sender === "bot" && (
+                <img
+                  src={process.env.REACT_APP_API_URL + "/images/gemini.jpg"}
+                  alt={"bot"}
+                  className="w-10 h-10 rounded-full object-cover cursor-pointer"
+                />
+              )}
+              <div
+                className={`p-4 max-w-[80%] w-fit rounded-lg break-words mb-4 ${
+                  msg.sender === "user"
+                    ? "bg-[#D84152] text-white ml-auto"
+                    : "bg-gray-100 text-black mr-auto"
+                }`}
+              >
+                {msg.sender === "bot" ? (
+                  <div dangerouslySetInnerHTML={{ __html: msg.text }} />
+                ) : (
                   <p>{msg.text}</p>
-                </div>
-              </div>
-              <div className={`flex justify-start`}>
-                <div
-                  className={`p-3 max-w-xl rounded-lg bg-gray-200 text-black`}
-                >
-                  <p>{msg.response}</p>
-                </div>
+                )}
               </div>
             </div>
           ))}
+
         <div ref={chatRef} />
       </div>
       <div className="p-4 bg-white border-t">
