@@ -29,7 +29,7 @@ const Header = () => {
           });
           const userData = response?.data?.data?.user;
           setLoggedUser({
-            ava: process.env.REACT_APP_API_URL + userData.ava,
+            ava: process.env.SECRET_APP_API_URL + userData.ava,
             id: userData.id,
             isLoggedIn: true,
           });

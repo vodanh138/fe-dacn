@@ -515,7 +515,7 @@ function ChatMessage({ text, sender, loggedUser, createdAt, id, reaction }) {
       >
         {messageClass === "received" && (
           <img
-            src={process.env.REACT_APP_API_URL + user.ava}
+            src={process.env.SECRET_APP_API_URL + user.ava}
             alt={user}
             className="w-10 h-10 rounded-full object-cover cursor-pointer"
             onClick={() =>
