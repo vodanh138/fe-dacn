@@ -1,6 +1,5 @@
-import "./Chatbox.css";
 import { initializeApp } from "firebase/app";
-import { useCollectionData } from "react-firebase-hooks/firestore";
+import { useCollectionData, useDocumentData } from "react-firebase-hooks/firestore";
 import {
   getFirestore,
   collection,
@@ -13,6 +12,7 @@ import {
   deleteDoc,
   updateDoc,
   getDoc,
+  where,
 } from "firebase/firestore";
 import { useState, useEffect, useRef } from "react";
 import { Button, Input, Layout, Dropdown } from "antd";
@@ -31,7 +31,7 @@ import {
   sadIcon,
   wowIcon,
 } from "../../assets/reactions/reactions";
-import firebaseConfig from "./firebaseconfig";
+import firebaseConfig from "../..";
 import { http } from "../../services/http";
 import { useNavigate } from "react-router-dom";
 
@@ -40,18 +40,21 @@ const { Header, Content, Footer } = Layout;
 const app = initializeApp(firebaseConfig);
 const firestore = getFirestore(app);
 
-function Chatbox() {
+function Chatbox({userID}) {
   const [visible, setVisible] = useState(false);
   const messagesRef = collection(firestore, "messages");
-  const messagesQuery = query(
-    messagesRef,
-    orderBy("createdAt", "desc"),
-  );
+  const messagesQuery = query(messagesRef, orderBy("createdAt", "desc"));
   const [messages] = useCollectionData(messagesQuery, { idField: "id" });
+
+  const chatboxQuery = doc(firestore, "chatbox", String(userID));
+  const [chatboxx] = useDocumentData(chatboxQuery, { idField: "id" });
+  const chatboxs = chatboxx?.chatto || [];
+
   const [formValue, setFormValue] = useState("");
   const messagesEndRef = useRef(null);
   const [sending, setSending] = useState("");
   const [sender, setSender] = useState("");
+  const [currentChatUser, setCurrentChatUser] = useState(null);
 
   const toggleChatbox = () => {
     setVisible(!visible);
@@ -167,8 +170,20 @@ function Chatbox() {
       />
       {visible && (
         <Layout className={`chatbox ${visible ? "chatbox-visible" : ""}`}>
+          <aside className="chatbox-sidebar">
+            {Array.isArray(chatboxs)&&   console.log(chatboxs) && chatboxs.map((user) => (
+              <div
+                key={user}
+                // className={`chatbox-user ${
+                //   user === currentChatUser.id ? "active" : ""
+                // }`}
+                onClick={() => setCurrentChatUser(user)}
+              >
+              </div>
+            ))}
+          </aside>
           <Header className="chatbox-header">
-            <div className="chatbox-title">Server Chat</div>
+            <div className="chatbox-title">Chat</div>
             <Button
               type="text"
               icon={<CloseOutlined />}
@@ -262,16 +277,16 @@ function ChatMessage({ text, sender, loggedUser, createdAt, id, reaction }) {
   };
 
   const formattedTime = createdAt
-  ? `${createdAt.toDate().toLocaleDateString([], {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-    })} ${createdAt.toDate().toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: false,
-    })}`
-  : "";
+    ? `${createdAt.toDate().toLocaleDateString([], {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+      })} ${createdAt.toDate().toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false,
+      })}`
+    : "";
 
   useEffect(() => {
     const findcurrentReaction = async () => {

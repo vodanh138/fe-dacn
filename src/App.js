@@ -9,6 +9,8 @@ import "./tailwind.css";
 import { PopupProvider } from "./contexts/PopupContext";
 import { LoadingProvider } from "./contexts/LoadingContext";
 import Chatbot from "./feature/chatbot";
+import Messenger from "./feature/messenger/messenger";
+import './App.css';
 
 const App = () => {
   return (
@@ -22,6 +24,8 @@ const App = () => {
               <Route path="/chatbot" element={<Chatbot />} />
               <Route path="/register" element={<Register />} />
               <Route path="/" element={<Dashboard />} />
+              <Route path="/messenger/:id" element={<Messenger />} />
+              <Route path="/messenger" element={<Messenger />} />
               <Route path="/user/:id" element={<Friend />} />
             </Routes>
           </Router>

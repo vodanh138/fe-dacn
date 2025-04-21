@@ -18,6 +18,9 @@ const Friend = () => {
   const [following, setFollowing] = useState(0);
   const navigate = useNavigate();
 
+  const handlePrivateMessage = () => {
+    navigate(`/messenger/${id}`)
+  };
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -102,7 +105,10 @@ const Friend = () => {
         setFollowers(isFollow ? followers - 1 : followers + 1);
       }
     } catch (error) {
-      console.error("Failed to handle Follow request", error?.response?.data?.message);
+      console.error(
+        "Failed to handle Follow request",
+        error?.response?.data?.message
+      );
     }
   };
 
@@ -158,14 +164,23 @@ const Friend = () => {
               <h2 className="text-2xl font-semibold text-gray-800">{`${user.name}`}</h2>
             </div>
 
-            <button
-              onClick={handleAddFollow}
-              className={`mt-4 px-4 py-2 rounded-lg text-white ${
-                isFollow ? "bg-red-500" : "bg-blue-500"
-              }`}
-            >
-              {isFollow ? "Unfollow" : "Follow"}
-            </button>
+            <div className="flex justify-between mt-4 space-x-4">
+              <button
+                onClick={handleAddFollow}
+                className={`px-4 py-2 rounded-lg text-white ${
+                  isFollow ? "bg-red-500" : "bg-blue-500"
+                }`}
+              >
+                {isFollow ? "Unfollow" : "Follow"}
+              </button>
+
+              <button
+                onClick={handlePrivateMessage}
+                className="px-4 py-2 rounded-lg text-white bg-green-500"
+              >
+                Message
+              </button>
+            </div>
             <div className="flex justify-around mt-4 w-full">
               <div className="text-center">
                 <h3 className="text-xl font-bold text-gray-800">{followers}</h3>
