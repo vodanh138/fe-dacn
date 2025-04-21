@@ -60,7 +60,7 @@ const SearchBar = () => {
               }
             >
               <img
-                src={process.env.SECRET_APP_API_URL + user.ava}
+                src={process.env.REACT_APP_API_URL + user.ava}
                 alt={user.name}
                 className="w-8 h-8 rounded-full"
               />

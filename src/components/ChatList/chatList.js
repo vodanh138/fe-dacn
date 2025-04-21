@@ -74,7 +74,7 @@ const ChatList = ({ chatList, setSelectedChatForP }) => {
               onClick={() => setSelectedChat(friend.id)}
             >
               <img
-                src={process.env.SECRET_APP_API_URL + friend.ava}
+                src={process.env.REACT_APP_API_URL + friend.ava}
                 alt="avatar"
                 className="w-10 h-10 rounded-full border border-gray-400"
               />

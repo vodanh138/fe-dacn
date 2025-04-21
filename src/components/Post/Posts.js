@@ -22,7 +22,7 @@ const Posts = ({ post, index, handleLike }) => {
     >
       <div className="flex items-center mb-4">
         <img
-          src={process.env.SECRET_APP_API_URL + post.user_ava}
+          src={process.env.REACT_APP_API_URL + post.user_ava}
           alt={post.user}
           className="w-10 h-10 rounded-full object-cover mr-4 cursor-pointer"
           onClick={() =>
@@ -52,7 +52,7 @@ const Posts = ({ post, index, handleLike }) => {
 
       {post.image && (
         <img
-          src={process.env.SECRET_APP_API_URL + post.image}
+          src={process.env.REACT_APP_API_URL + post.image}
           alt="Post"
           className="w-full max-w-md h-auto object-cover rounded-lg shadow-md"
         />

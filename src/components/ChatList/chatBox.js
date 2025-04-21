@@ -98,7 +98,7 @@ const Chatbox = ({ selectedChatId, sender }) => {
               >
                 {/* {msg.sender != sender && (
                   <img
-                    src={process.env.SECRET_APP_API_URL + "/images/gemini.jpg"}
+                    src={process.env.REACT_APP_API_URL + "/images/gemini.jpg"}
                     alt={"bot"}
                     className="w-10 h-10 rounded-full object-cover cursor-pointer"
                   />

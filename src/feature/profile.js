@@ -212,7 +212,7 @@ const Profile = () => {
           {user.coverphoto && (
             <div className="relative">
               <img
-                src={process.env.SECRET_APP_API_URL + user.coverphoto}
+                src={process.env.REACT_APP_API_URL + user.coverphoto}
                 alt={`${user.firstname} ${user.lastname}`}
                 className="w-full h-64 object-cover rounded-lg shadow-md cursor-pointer"
                 onClick={() =>
@@ -231,7 +231,7 @@ const Profile = () => {
           <div className="bg-white p-8 shadow-lg rounded-lg flex flex-col items-center relative -mt-20 z-10">
             <div className="relative">
               <img
-                src={process.env.SECRET_APP_API_URL + user.ava}
+                src={process.env.REACT_APP_API_URL + user.ava}
                 alt={`Avatar of ${user.firstname} ${user.lastname}`}
                 className="w-32 h-32 rounded-full border-4 border-white shadow-md cursor-pointer hover:scale-105 transition-transform"
                 onClick={() => document.getElementById("avatarInput").click()}
