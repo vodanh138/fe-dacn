@@ -13,6 +13,7 @@ import {
 import { initializeApp } from "firebase/app";
 import firebaseConfig from "../components/Chatbox/firebaseconfig";
 import { useCollectionData } from "react-firebase-hooks/firestore";
+import bot from "../assets/gemini.jpg";
 
 const app = initializeApp(firebaseConfig);
 const firestore = getFirestore(app);
@@ -117,7 +118,7 @@ const Chatbot = () => {
             >
               {msg.sender === "bot" && (
                 <img
-                  src={process.env.REACT_APP_API_URL + "/images/gemini.jpg"}
+                  src={bot}
                   alt={"bot"}
                   className="w-10 h-10 rounded-full object-cover cursor-pointer"
                 />

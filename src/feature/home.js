@@ -24,7 +24,7 @@ const Dashboard = () => {
           });
           const userData = response?.data?.data?.user;
           setLoggedUser({
-            ava: process.env.REACT_APP_API_URL + userData.ava,
+            ava: "https://res.cloudinary.com/dcrmd6dqj/image/upload/v1746043161/" + userData.ava,
             id: userData.id,
             isLoggedIn: true,
           });

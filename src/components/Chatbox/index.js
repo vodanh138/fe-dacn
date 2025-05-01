@@ -500,7 +500,7 @@ function ChatMessage({ text, sender, loggedUser, createdAt, id, reaction }) {
       >
         {messageClass === "received" && (
           <img
-            src={process.env.REACT_APP_API_URL + user.ava}
+            src={"https://res.cloudinary.com/dcrmd6dqj/image/upload/v1746043161/" + user.ava}
             alt={user}
             className="w-10 h-10 rounded-full object-cover cursor-pointer"
             onClick={() =>

@@ -91,7 +91,7 @@ const Comment = ({ post_id }) => {
           <div key={comment.id} className="p-2 border rounded bg-gray-100">
             <div className="flex items-center mb-2">
               <img
-                src={process.env.REACT_APP_API_URL + comment.user_ava}
+                src={"https://res.cloudinary.com/dcrmd6dqj/image/upload/v1746043161/" + comment.user_ava}
                 alt={comment.user_name}
                 className="w-8 h-8 rounded-full object-cover mr-3"
               />

@@ -60,7 +60,7 @@ const SearchBar = () => {
               }
             >
               <img
-                src={process.env.REACT_APP_API_URL + user.ava}
+                src={"https://res.cloudinary.com/dcrmd6dqj/image/upload/v1746043161/" + user.ava}
                 alt={user.name}
                 className="w-8 h-8 rounded-full"
               />
